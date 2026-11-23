@@ -21,7 +21,7 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
 <style>[hidden]{display:none !important}</style>
 </head>
 <body>
-<!-- Formulaires : rien n'est envoyé tant qu'ils ne sont pas branchés sur un outil (voir README.md). -->
+<!-- Formulaires : envoyés par Formspree. Les deux adresses sont à coller en bas du fichier (voir README.md). -->
 <div style="width: 100%; color: #F7EEF2; background: #1C0E22">
 
 <header style="position: sticky; top: 0; z-index: 10; background: rgba(28,14,34,0.94); border-bottom: 1px solid rgba(255,194,123,0.16)">
@@ -166,10 +166,6 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
 <div style="border: 1px solid #EADBE3; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 10px"><p style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #A3156B">À la fin des 8 semaines</p><p style="font-size: 17px; line-height: 1.55; color: #3E2B3A">Ton dossier est prêt, ton réseau est activé, tes entretiens sont préparés.</p></div>
 <div style="border: 1px solid #EADBE3; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 10px"><p style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #A3156B">Sur le long terme</p><p style="font-size: 17px; line-height: 1.55; color: #3E2B3A">Tu gardes une méthode pour piloter ta carrière, à chaque nouveau poste.</p></div>
 </div>
-<div style="border: 1.5px dashed #CFB7C5; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 8px; color: #6B5566">
-<p style="font-size: 15px; font-weight: 600">[Témoignages des premières personnes accompagnées : à ajouter après la première cohorte]</p>
-<p style="font-size: 14px; line-height: 1.5">Seulement des témoignages réels, avec l'accord écrit des personnes.</p>
-</div>
 </div>
 </section>
 
@@ -183,11 +179,12 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
 <div style="background: #FFF6EA; border-radius: 16px; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline"><p style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6B0F47; min-width: 96px">Lundi</p><p style="font-size: 18px; font-weight: 600">Ton dossier version pharma</p></div>
 <div style="background: #FFF6EA; border-radius: 16px; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline"><p style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6B0F47; min-width: 96px">Mardi</p><p style="font-size: 18px; font-weight: 600">L'entretien et ton plan</p></div>
 </div>
-<form aria-label="Inscription au challenge" style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 6px">
+<form id="challenge-form" aria-label="Inscription au challenge" style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 6px">
 <label for="site-challenge-email" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ton adresse e-mail</label>
-<input id="site-challenge-email" type="email" placeholder="Ton adresse e-mail" style="flex: 1 1 260px; min-height: 52px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #6B0F47; background: #FFFFFF; font-size: 16px; color: #22121F">
+<input id="site-challenge-email" name="email" type="email" required placeholder="Ton adresse e-mail" style="flex: 1 1 260px; min-height: 52px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #6B0F47; background: #FFFFFF; font-size: 16px; color: #22121F">
 <button type="submit" style="min-height: 52px; padding: 0 28px; border-radius: 999px; border: 0; background: #22121F; color: #FFFFFF; font-weight: 600; font-size: 17px; cursor: pointer">Je m'inscris gratuitement</button>
 </form>
+<p id="challenge-msg" aria-live="polite" style="font-size: 15px; font-weight: 600; color: #22121F"></p>
 </div>
 <div style="flex: 1 1 300px; min-width: 0; max-width: 360px; margin: 0 auto">
 <img src="assets/elisama-bordeaux.jpg" alt="Elisama Knickerbocker assise, en tailleur bordeaux" style="display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 20%; border-radius: 24px">
@@ -231,30 +228,31 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
 <div id="bar2" style="height: 6px; border-radius: 999px; background: #4A2E45"></div>
 <div id="bar3" style="height: 6px; border-radius: 999px; background: #4A2E45"></div>
 </div>
+<p id="form-error" role="alert" style="font-size: 15px; font-weight: 600; color: #FFC27B"></p>
 <p id="step-label" aria-live="polite" style="font-size: 15px; color: #D9C4D2">Étape 1 sur 3 · Toi</p>
 <div style="background: #2A1530; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
 <div data-step="1">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-nom" style="font-size: 15px; font-weight: 600">Prénom et nom</label><input id="s-nom" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-email" style="font-size: 15px; font-weight: 600">E-mail</label><input id="s-email" type="email" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-whatsapp" style="font-size: 15px; font-weight: 600">WhatsApp</label><input id="s-whatsapp" type="tel" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-pays" style="font-size: 15px; font-weight: 600">Pays de résidence</label><input id="s-pays" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-nom" style="font-size: 15px; font-weight: 600">Prénom et nom</label><input id="s-nom" name="nom" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-email" style="font-size: 15px; font-weight: 600">E-mail</label><input id="s-email" name="email" type="email" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-whatsapp" style="font-size: 15px; font-weight: 600">WhatsApp</label><input id="s-whatsapp" name="whatsapp" type="tel" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-pays" style="font-size: 15px; font-weight: 600">Pays de résidence</label><input id="s-pays" name="pays" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
 </div>
 </div>
 <div data-step="2" hidden>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-formation" style="font-size: 15px; font-weight: 600">Formation</label><select id="s-formation" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"><option>Pharmacie</option><option>Ingénierie</option><option>Chimie</option><option>Biologie</option><option>Autre</option></select></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-poste" style="font-size: 15px; font-weight: 600">Poste actuel et années d'expérience</label><input id="s-poste" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-langues" style="font-size: 15px; font-weight: 600">Niveau de français et d'anglais</label><input id="s-langues" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-diplome" style="font-size: 15px; font-weight: 600">Où as-tu obtenu ton diplôme ?</label><input id="s-diplome" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-formation" style="font-size: 15px; font-weight: 600">Formation</label><select id="s-formation" name="formation" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"><option>Pharmacie</option><option>Ingénierie</option><option>Chimie</option><option>Biologie</option><option>Autre</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-poste" style="font-size: 15px; font-weight: 600">Poste actuel et années d'expérience</label><input id="s-poste" name="poste_et_experience" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-langues" style="font-size: 15px; font-weight: 600">Niveau de français et d'anglais</label><input id="s-langues" name="langues" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-diplome" style="font-size: 15px; font-weight: 600">Où as-tu obtenu ton diplôme ?</label><input id="s-diplome" name="pays_du_diplome" type="text" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"></div>
 </div>
 </div>
 <div data-step="3" hidden>
 <div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-objectif" style="font-size: 15px; font-weight: 600">Ton objectif dans les 6 prochains mois</label><textarea id="s-objectif" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px; resize: vertical"></textarea></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-blocage" style="font-size: 15px; font-weight: 600">Ce qui te bloque le plus aujourd'hui</label><textarea id="s-blocage" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px; resize: vertical"></textarea></div>
-<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-investir" style="font-size: 15px; font-weight: 600">Prêt·e à investir dans un accompagnement dans les 30 jours ?</label><select id="s-investir" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"><option>Oui</option><option>Pas encore</option></select></div>
-<div style="display: flex; gap: 12px; align-items: flex-start"><input id="s-rgpd" type="checkbox" style="width: 22px; height: 22px; margin-top: 2px; accent-color: #CB1A86; flex: none"><label for="s-rgpd" style="font-size: 14px; line-height: 1.55; color: #D9C4D2">J'accepte que mes informations soient utilisées pour étudier ma candidature et me recontacter. [Lien vers la politique de confidentialité]</label></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-objectif" style="font-size: 15px; font-weight: 600">Ton objectif dans les 6 prochains mois</label><textarea id="s-objectif" name="objectif_6_mois" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px; resize: vertical"></textarea></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-blocage" style="font-size: 15px; font-weight: 600">Ce qui te bloque le plus aujourd'hui</label><textarea id="s-blocage" name="blocage" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px; resize: vertical"></textarea></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><label for="s-investir" style="font-size: 15px; font-weight: 600">Prêt·e à investir dans un accompagnement dans les 30 jours ?</label><select id="s-investir" name="pret_a_investir_30_jours" style="min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #5B3F57; background: #1C0E22; color: #FFFFFF; font-size: 16px"><option>Oui</option><option>Pas encore</option></select></div>
+<div style="display: flex; gap: 12px; align-items: flex-start"><input id="s-rgpd" name="consentement_rgpd" value="oui" type="checkbox" style="width: 22px; height: 22px; margin-top: 2px; accent-color: #CB1A86; flex: none"><label for="s-rgpd" style="font-size: 14px; line-height: 1.55; color: #D9C4D2">J'accepte que mes informations soient utilisées pour étudier ma candidature et me recontacter. [Lien vers la politique de confidentialité]</label></div>
 </div>
 </div>
 <div data-step="4" hidden>
@@ -305,10 +303,29 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
 
 <script>
 (function () {
+  // ===== Adresses Formspree =====
+  // Les deux formulaires utilisent le même formulaire Formspree (xnpdopva).
+  // Le champ "formulaire" et l'objet de l'e-mail indiquent d'où vient chaque réponse.
+  // Pour séparer plus tard : créez un 2e formulaire sur formspree.io et collez sa nouvelle adresse dans URL_CHALLENGE.
+  var URL_CANDIDATURE = 'https://formspree.io/f/xnpdopva';
+  var URL_CHALLENGE = 'https://formspree.io/f/xnpdopva';
+  // ===============================
+
+  // Lit le message d'erreur renvoyé par Formspree (s'il y en a un)
+  function formspreeError(r, fallback) {
+    return r.json().then(function (d) {
+      var msg = d && d.errors ? d.errors.map(function (e) { return e.message; }).join(' · ') : '';
+      throw new Error(msg || fallback);
+    }, function () { throw new Error(fallback); });
+  }
+
   var step = 1;
   var labels = {1: 'Étape 1 sur 3 · Toi', 2: 'Étape 2 sur 3 · Ton parcours', 3: 'Étape 3 sur 3 · Ton objectif', 4: 'Candidature envoyée'};
   var next = document.getElementById('btn-next');
   var back = document.getElementById('btn-back');
+  var err = document.getElementById('form-error');
+  var fields = ['s-nom','s-email','s-whatsapp','s-pays','s-formation','s-poste','s-langues','s-diplome','s-objectif','s-blocage','s-investir'];
+
   function render() {
     document.querySelectorAll('[data-step]').forEach(function (el) {
       el.hidden = Number(el.getAttribute('data-step')) !== step;
@@ -321,17 +338,59 @@ input,select,textarea,button{font-family:Inter,system-ui,sans-serif}
     next.hidden = step >= 4;
     next.textContent = step === 3 ? 'Envoyer ma candidature' : 'Continuer';
   }
+  function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+  function sendCandidature() {
+    var data = new FormData();
+    fields.forEach(function (id) { var el = document.getElementById(id); data.append(el.name, el.value); });
+    data.append('consentement_rgpd', 'oui');
+    data.append('formulaire', 'Candidature mentorat');
+    data.append('_subject', 'Nouvelle candidature mentorat : ' + val('s-nom'));
+    data.append('_replyto', val('s-email'));
+    next.disabled = true; next.textContent = 'Envoi…';
+    fetch(URL_CANDIDATURE, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) return formspreeError(r, '');
+        step = 4; err.textContent = ''; render();
+      })
+      .catch(function (e) {
+        err.textContent = "L'envoi n'a pas fonctionné" + (e && e.message ? ' (' + e.message + ')' : '') + ". Réessaie dans un instant ou écris-moi sur LinkedIn.";
+        next.textContent = 'Envoyer ma candidature';
+      })
+      .then(function () { next.disabled = false; });
+  }
+
   next.addEventListener('click', function () {
+    err.textContent = '';
+    if (step === 1 && (!val('s-nom') || !/^\S+@\S+\.\S+$/.test(val('s-email')))) {
+      err.textContent = 'Indique ton nom et une adresse e-mail valide.'; return;
+    }
     if (step === 3) {
-      // À BRANCHER : envoyer les réponses vers votre outil (Systeme.io, Tally, Formspree…).
-      // Pour l'instant, rien n'est envoyé : on affiche seulement le message de confirmation.
+      if (!document.getElementById('s-rgpd').checked) { err.textContent = 'Coche la case de consentement pour envoyer ta candidature.'; return; }
+      sendCandidature(); return;
     }
     step = Math.min(step + 1, 4);
     render();
   });
-  back.addEventListener('click', function () { step = Math.max(step - 1, 1); render(); });
-  document.querySelectorAll('form').forEach(function (f) {
-    f.addEventListener('submit', function (e) { e.preventDefault(); });
+  back.addEventListener('click', function () { err.textContent = ''; step = Math.max(step - 1, 1); render(); });
+
+  var cform = document.getElementById('challenge-form');
+  var cmsg = document.getElementById('challenge-msg');
+  cform.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var data = new FormData(cform);
+    data.append('formulaire', 'Inscription challenge');
+    data.append('_subject', 'Nouvelle inscription au challenge');
+    var cbtn = cform.querySelector('button[type="submit"], button');
+    if (cbtn) cbtn.disabled = true;
+    cmsg.textContent = 'Envoi…';
+    fetch(URL_CHALLENGE, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) return formspreeError(r, '');
+        cform.reset(); cmsg.textContent = "C'est noté ! Tu recevras le lien des lives par e-mail.";
+      })
+      .catch(function (e) { cmsg.textContent = "L'inscription n'a pas fonctionné" + (e && e.message ? ' (' + e.message + ')' : '') + ". Réessaie dans un instant."; })
+      .then(function () { if (cbtn) cbtn.disabled = false; });
   });
   render();
 })();
